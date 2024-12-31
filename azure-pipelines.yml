@@ -27,6 +27,13 @@ steps:
     command: 'custom'
     workingDir: 'frontend'
     customCommand: 'run build'
+
+    - task: CopyFiles@2
+  inputs:
+    Contents: |
+      frontend/build/**
+      backend/**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
     
 # Step 5: Move frontend build output to site/wwwroot
 - task: CopyFiles@2
@@ -35,7 +42,15 @@ steps:
     Contents: |
       frontend/build/**
     TargetFolder: $(Build.ArtifactStagingDirectory)/site/wwwroot
-    
+
+# Step 6: Copy backend files to site/wwwroot/backend (if needed)
+- task: CopyFiles@2
+  displayName: 'Copy backend files to site/wwwroot/backend'
+  inputs:
+    Contents: |
+      backend/**
+    TargetFolder: $(Build.ArtifactStagingDirectory)/site/wwwroot/backend
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
